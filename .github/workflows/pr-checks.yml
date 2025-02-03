@@ -3,27 +3,37 @@ name: Pull Request Checks
 on:
   pull_request:
     branches:
-      - main  # Runs only when a PR targets the "main" branch
+      - main  # This will trigger the workflow on pull requests targeting the main branch
 
 jobs:
   build:
-    name: Run Checks
+    name: Run Python Checks
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js (for JavaScript/TypeScript projects)
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          node-version: 18
+          python-version: "3.10"  # Specify the Python version you want to use
 
       - name: Install dependencies
-        run: npm install  # Change to 'yarn' or 'pnpm' if needed
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
 
-      - name: Run Linting
-        run: npm run lint  # Ensure you have a lint script in package.json
+      - name: Run Linting (Optional)
+        run: |
+          source venv/bin/activate
+          pip install pylint
+          pylint your_python_module  # Replace with the module or files you want to lint
 
       - name: Run Tests
-        run: npm test  # Change this based on your project
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
+          pytest  # Ensure you have pytest or your test framework configured
