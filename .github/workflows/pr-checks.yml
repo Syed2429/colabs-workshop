@@ -1,0 +1,29 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main  # Runs only when a PR targets the "main" branch
+
+jobs:
+  build:
+    name: Run Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (for JavaScript/TypeScript projects)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install  # Change to 'yarn' or 'pnpm' if needed
+
+      - name: Run Linting
+        run: npm run lint  # Ensure you have a lint script in package.json
+
+      - name: Run Tests
+        run: npm test  # Change this based on your project
